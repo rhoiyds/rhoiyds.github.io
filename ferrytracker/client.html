@@ -1,0 +1,123 @@
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.3.js"></script>
+<script>
+      
+      var socket = io();
+      var coords = {};
+     
+  
+ </script>
+ <button type="button" id="button1"> Button 1 </button>
+ <button type="button" id="button2"> Button 2 </button>
+<button type="button" id="button3"> Button 3 </button>
+<button type="button" id="button4"> Button 4 </button>
+ <script>
+ $('#button1').click(function () {
+         coords.longitude = 152.873324;      
+        coords.latitude = -31.4195658;
+        socket.emit('newCoords', JSON.stringify(coords));
+        console.log("Sent coordinate 1");
+
+ });
+  $('#button2').click(function () {
+        coords.longitude = 152.8737855;
+        coords.latitude = -31.421085;
+        socket.emit('newCoords', JSON.stringify(coords));
+        console.log("Sent coordinate 2");
+ });
+    $('#button3').click(function () {
+        //y = -0.11634 *  x + 149.2187
+        //from -31.418832 to -31.422445
+        //-160 every second
+        var x = 418832;
+        var increase = true;
+
+        //setTimeout(continueExecution(x), 1000);
+
+        setInterval( function(){
+            if (x <= 418832) {
+               
+                console.log("X is now" + x);
+                increase = true;
+            }
+            else if (x >= 422445) {
+                x = x - 160;
+                increase = false;
+            }
+            else {
+                console.log("continue on");
+            }
+
+            if (increase) {
+                 x = x + 20;
+            }
+            else {
+                x = x - 20;
+            }
+
+            var tempa = "-31." + x;
+            var tempb = Number(tempa);
+
+            var y = (-0.11634 * tempb) + 149.2187;
+
+         coords.longitude = y;
+        coords.latitude = tempb;
+        socket.emit('newCoords', JSON.stringify(coords));
+        console.log("Sent coordinate " + tempa + ", " + y);
+     }, 1000);
+               
+
+ });
+  $('#button4').click(function () {
+
+
+        
+         if (navigator.geolocation) {
+             setInterval( function(){
+        navigator.geolocation.getCurrentPosition(sendPosition);
+        }, 1000);
+    } else {
+       
+        x.innerHTML = "Geolocation is not supported by this browser.";
+            
+    } 
+    
+ });
+
+      function sendPosition(position) {
+        console.log("Longitude: " + position.coords.longitude + "/n Latidude: " + position.coords.latitude);
+        coords.longitude = position.coords.longitude;
+        coords.latitude = position.coords.latitude;
+        socket.emit('newCoords', JSON.stringify(coords));
+        console.log("Sent real life coords");
+    }
+
+    // function continueExecution(x) {
+
+    //     console.log("X is equal to " + x);
+
+    //     if (x <= 418832) {
+    //             x = x + 160;
+    //             console.log("X is now" + x);
+    //         }
+    //         else if (x >= 422445) {
+    //             x = x - 160;
+    //         }
+    //         else {
+    //             console.log("fuck");
+    //         }
+
+    //         var tempa = "-31." + x;
+    //         var tempb = Number(tempa);
+
+    //         var y = (-0.11634 * tempb) + 149.2187;
+
+    //      coords.longitude = y;
+    //     coords.latitude = tempb;
+    //     socket.emit('newCoords', JSON.stringify(coords));
+    //     console.log("Sent coordinate " + tempa + ", " + y);
+    //     setTimeout(continueExecution(x), 1000);
+
+
+    // }
+ </script>
